@@ -4,6 +4,7 @@ import com.theono.authorization.constant.ErrorCase;
 import com.theono.authorization.exception.ErrorStatusException;
 import com.theono.authorization.model.dto.CustomUserDetails;
 import com.theono.authorization.model.request.LoginRequest;
+import com.theono.authorization.util.JwtUtil;
 import com.theono.authorization.util.RequestResponseUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -74,6 +75,10 @@ public class LoginAuthenticationFilter extends OncePerRequestFilter {
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
+
+        String accessToken = JwtUtil.generateAccessToken(userId);
+        System.out.println("access token : "+accessToken);
+
         RequestResponseUtil.addCookieWithHttpOnly(response, "access-token","abcdefg");
     }
 }
