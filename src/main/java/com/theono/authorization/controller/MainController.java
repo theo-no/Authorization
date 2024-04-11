@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 public class MainController {
 
-    @GetMapping("/user")
-    public String userPage(){
-        return "user page";
-    }
+    @GetMapping
+    public String indexPage(){ return "index page"; }
+
 
     @GetMapping("/admin")
     public String adminPage(){
