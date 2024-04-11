@@ -1,9 +1,12 @@
 package com.theono.authorization.config;
 
+import com.theono.authorization.filter.JwtAuthenticationFilter;
 import com.theono.authorization.filter.LoginAuthenticationFilter;
+import com.theono.authorization.service.CustomUserDetailsService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +26,10 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig {
+
+    private final CustomUserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -59,9 +65,12 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http.addFilterAt(
-                            new LoginAuthenticationFilter(
-                                    http.getSharedObject(AuthenticationManager.class)),
-                            UsernamePasswordAuthenticationFilter.class);
+                            new LoginAuthenticationFilter(http.getSharedObject(AuthenticationManager.class)),
+                            UsernamePasswordAuthenticationFilter.class)
+                    .addFilterAfter(
+                            new JwtAuthenticationFilter(userDetailsService),
+                            LoginAuthenticationFilter.class
+                    );
         }
     }
 
@@ -72,7 +81,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(
-                "/static/**"
+                "/js/**"
         );
     }
 

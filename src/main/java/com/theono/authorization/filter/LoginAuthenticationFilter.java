@@ -7,6 +7,7 @@ import com.theono.authorization.model.request.LoginRequest;
 import com.theono.authorization.util.RequestResponseUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
