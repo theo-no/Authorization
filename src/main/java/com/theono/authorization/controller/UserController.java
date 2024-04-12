@@ -30,7 +30,7 @@ public class UserController {
 
     @GetMapping("/info")
     @ResponseBody
-    public ResponseEntity<UserDto> getUserInfo(HttpServletRequest request){
+    public ResponseEntity<?> getUserInfo(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
         String accessToken = null;
         if (cookies != null) {

@@ -7,8 +7,8 @@ button_user_info.addEventListener('click', function(){
         "GET",
         null,
         null,
-        function(response) {
-            console.log(response);
+        function(response, data) {
+            console.log(data);
         },
         function(error) {
             console.error(error);

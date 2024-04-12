@@ -14,11 +14,15 @@ function sendFetchRequest(url, type, requestData, params, successCallback, error
     fetch(url, options)
         .then(response => {
             if (response.ok) {
-                return response.json();
+                const contentType = response.headers.get("Content-Type");
+                if (contentType && contentType.includes("application/json")) {
+                    return response.json().then(json => successCallback(response, json)); // JSON 형태일 때
+                } else {
+                    return successCallback(response, null); // JSON 형태가 아닐 때
+                }
             } else {
                 throw new Error('Network response was not ok.');
             }
         })
-        .then(data => successCallback(data))
         .catch(error => errorCallback(error));
 }
