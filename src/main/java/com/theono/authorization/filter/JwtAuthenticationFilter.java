@@ -2,6 +2,8 @@ package com.theono.authorization.filter;
 
 import com.theono.authorization.exception.ErrorStatusException;
 import com.theono.authorization.service.CustomUserDetailsService;
+import com.theono.authorization.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -38,9 +40,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(accessToken==null) { //access token이 null TODO 로그인이나 reissue 아니면 튕겨내라
             filterChain.doFilter(request, response);
+        }else{
+            Claims claims = JwtUtil.validateAccessToken(accessToken);
+            if(claims.getSubject().equals("access")){
+                String userId = claims.get("userId", String.class);
+                Authentication authResult = authenticate(userId);
+                onSuccessfulAuthentication(authResult, request, response, filterChain);
+            }else{
+                filterChain.doFilter(request, response);
+            }
         }
-
-        filterChain.doFilter(request,response);
     }
 
 

@@ -79,6 +79,6 @@ public class LoginAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = JwtUtil.generateAccessToken(userId);
         System.out.println("access token : "+accessToken);
 
-        RequestResponseUtil.addCookieWithHttpOnly(response, "access-token","abcdefg");
+        RequestResponseUtil.addCookieWithHttpOnly(response, "access-token",accessToken);
     }
 }

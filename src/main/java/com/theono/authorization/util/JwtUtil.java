@@ -3,14 +3,9 @@ package com.theono.authorization.util;
 import com.theono.authorization.constant.ErrorCase;
 import com.theono.authorization.exception.ErrorStatusException;
 import com.theono.authorization.property.JwtProperty;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Map;
 
 public class JwtUtil {
 
@@ -33,15 +28,39 @@ public class JwtUtil {
                     .expiration(expiredDate)
                     .subject(subject)
                     .claim("userId", userId)
-//                    .signWith(JwtProperty.secretKey) //이렇게 하면 default 알고리즘 HS512
-                    .signWith(JwtProperty.secretKey, JwtProperty.signatureAlgorithm)
+                    .signWith(JwtProperty.secretKey)
                     .compact();
         } catch (Exception ex) {
-            System.out.println(ex);
             throw new ErrorStatusException(ErrorCase._401_AUTHENTICATION_FAIL); //TODO 이 Exception 처리 다시 생각
         }
 
         return generatedToken;
     }
 
+    public static Claims validateAccessToken(String accessToken) throws ErrorStatusException {
+
+        try {
+            JwtParser parser = Jwts.parser().verifyWith(JwtProperty.secretKey).build();
+            System.out.println(parser);
+            return parser.parseSignedClaims(accessToken).getPayload();
+        } catch (ExpiredJwtException ex) {
+            throw new ErrorStatusException(ErrorCase._401_ACCESS_TOKEN_EXPIRED);
+        } catch (Exception ex) {
+            throw new ErrorStatusException(ErrorCase._401_INVALID_ACCESS_TOKEN);
+        }
+
+    }
+
+    public static Claims validateRefreshToken(String refreshToken) throws ErrorStatusException {
+
+        try {
+            JwtParser parser = Jwts.parser().verifyWith(JwtProperty.secretKey).build();
+            return parser.parseSignedClaims(refreshToken).getPayload();
+        } catch (ExpiredJwtException ex) {
+            throw new ErrorStatusException(ErrorCase._401_REFRESH_TOKEN_EXPIRED);
+        } catch (Exception ex) {
+            throw new ErrorStatusException(ErrorCase._401_INVALID_REFRESH_TOKEN);
+        }
+
+    }
 }

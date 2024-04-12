@@ -48,6 +48,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login").permitAll()
+                        .requestMatchers("/user").hasRole("USER")
                         .anyRequest().authenticated())
                 .with(
                         new CustomDsl(),
