@@ -1,5 +1,6 @@
 package com.theono.authorization.config;
 
+import com.theono.authorization.filter.HandleErrorStatusExceptionFilter;
 import com.theono.authorization.filter.JwtAuthenticationFilter;
 import com.theono.authorization.filter.LoginAuthenticationFilter;
 import com.theono.authorization.service.CustomUserDetailsService;
@@ -65,9 +66,12 @@ public class SecurityConfig {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            http.addFilterAt(
-                            new LoginAuthenticationFilter(http.getSharedObject(AuthenticationManager.class)),
+            http
+                    .addFilterAt(new HandleErrorStatusExceptionFilter(),
                             UsernamePasswordAuthenticationFilter.class)
+                    .addFilterAfter(
+                            new LoginAuthenticationFilter(http.getSharedObject(AuthenticationManager.class)),
+                            HandleErrorStatusExceptionFilter.class)
                     .addFilterAfter(
                             new JwtAuthenticationFilter(userDetailsService),
                             LoginAuthenticationFilter.class
