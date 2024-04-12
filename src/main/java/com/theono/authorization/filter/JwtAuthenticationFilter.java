@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        if(accessToken==null) { //access token이 null TODO 로그인이나 reissue 아니면 튕겨내라
+        if(accessToken==null) { //access token이 null
             filterChain.doFilter(request, response);
         }else{
             Claims claims = JwtUtil.validateAccessToken(accessToken);

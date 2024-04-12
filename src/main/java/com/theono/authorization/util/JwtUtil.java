@@ -31,7 +31,7 @@ public class JwtUtil {
                     .signWith(JwtProperty.secretKey)
                     .compact();
         } catch (Exception ex) {
-            throw new ErrorStatusException(ErrorCase._401_AUTHENTICATION_FAIL); //TODO 이 Exception 처리 다시 생각
+            throw new ErrorStatusException(ErrorCase._500_JWT_GENERATE_FAIL);
         }
 
         return generatedToken;
