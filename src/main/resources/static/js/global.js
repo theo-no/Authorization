@@ -13,9 +13,8 @@ function sendFetchRequest(url, type, requestData, params, successCallback, error
     }
     fetch(url, options)
         .then(response => {
-            console.log(response);
             if (response.ok) {
-                return response;
+                return response.json();
             } else {
                 throw new Error('Network response was not ok.');
             }
